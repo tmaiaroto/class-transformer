@@ -479,7 +479,35 @@ export class TransformOperationExecutor {
       const excludedProperties = defaultMetadataStorage.getExcludedProperties(target, this.transformationType);
       if (excludedProperties.length > 0) {
         keys = keys.filter(key => {
-          return !excludedProperties.includes(key);
+          const excludeMetadata = defaultMetadataStorage.findExcludeMetadata(
+            target,
+            key
+          );
+
+          let shouldExclude = excludedProperties.includes(key);
+
+          if(!excludeMetadata || !excludeMetadata.options) {
+            return !shouldExclude;
+          }
+         
+          // apply grouping exclusion options
+          if(excludeMetadata.options.groups) {
+            shouldExclude = this.options.groups && this.options.groups.length
+              ? this.checkGroups(excludeMetadata.options.groups)
+              : false;
+          }
+
+          // apply versioning exclusion options
+          if(excludeMetadata.options.since || excludeMetadata.options.until) {
+            shouldExclude = this.options.version
+              ? this.checkVersion(
+                  excludeMetadata.options.since, 
+                  excludeMetadata.options.until
+                )
+              : false;            
+          }
+         
+          return !shouldExclude;
         });
       }
 
@@ -493,7 +521,7 @@ export class TransformOperationExecutor {
         });
       }
 
-      // apply grouping options
+      // apply grouping exposing options
       if (this.options.groups && this.options.groups.length) {
         keys = keys.filter(key => {
           const exposeMetadata = defaultMetadataStorage.findExposeMetadata(target, key);
