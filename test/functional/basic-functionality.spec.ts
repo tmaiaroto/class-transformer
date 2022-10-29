@@ -1257,12 +1257,12 @@ describe('basic functionality', () => {
       filename: string;
 
       @Exclude({
-        groups: ['guest']
+        groups: ['guest'],
       })
       status: number;
 
-      @Exclude({ 
-        groups: ['user']
+      @Exclude({
+        groups: ['user'],
       })
       metadata: string;
     }
@@ -1273,12 +1273,12 @@ describe('basic functionality', () => {
       lastName: string;
 
       @Exclude({
-        groups: ['user', 'guest']
+        groups: ['user', 'guest'],
       })
       password: string;
 
       @Exclude({
-        groups: ['guest']
+        groups: ['guest'],
       })
       isActive: boolean;
 
@@ -1286,7 +1286,7 @@ describe('basic functionality', () => {
       photo: Photo;
 
       @Exclude({
-        groups: ['user', 'guest']
+        groups: ['user', 'guest'],
       })
       @Type(type => Photo)
       photos: Photo[];
@@ -1327,15 +1327,15 @@ describe('basic functionality', () => {
     fromExistUser.photo = new Photo();
     fromExistUser.photo.metadata = 'taken by Camera';
 
-    // test if it works when not passing any 
+    // test if it works when not passing any
     // group as option (should not exclude any property)
-    const plainUser1: any = classToPlain(user);
+    const plainUser1: any = instanceToPlain(user);
     expect(plainUser1).not.toBeInstanceOf(User);
     expect(plainUser1).toEqual(fromPlainUser);
 
     // test if it work when passing a group
     // should exclude photos, password and photo.metadata
-    const plainUser2: any = classToPlain(user, { groups: ['user'] });
+    const plainUser2: any = instanceToPlain(user, { groups: ['user'] });
     expect(plainUser2).not.toBeInstanceOf(User);
     expect(plainUser2).toEqual({
       firstName: 'Umed',
@@ -1344,7 +1344,7 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         filename: 'myphoto.jpg',
-        status: 1
+        status: 1,
       },
     });
 
@@ -1353,7 +1353,7 @@ describe('basic functionality', () => {
     expect(plainUser2.photo).toBeDefined();
     expect(plainUser2.photo.metadata).toBeUndefined();
 
-    const transformedUser2 = plainToClass(User, fromPlainUser, {
+    const transformedUser2 = plainToInstance(User, fromPlainUser, {
       groups: ['user'],
     });
     expect(transformedUser2).toBeInstanceOf(User);
@@ -1365,15 +1365,11 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         filename: 'myphoto.jpg',
-        status: 1
+        status: 1,
       },
     });
 
-    const fromExistTransformedUser = plainToClassFromExist(
-      fromExistUser,
-      fromPlainUser,
-      { groups: ['user'] }
-    );
+    const fromExistTransformedUser = plainToClassFromExist(fromExistUser, fromPlainUser, { groups: ['user'] });
     expect(fromExistTransformedUser).toEqual(fromExistUser);
     expect(fromExistTransformedUser.photo).toEqual(fromExistUser.photo);
     expect(fromExistTransformedUser.photos).toBeUndefined();
@@ -1386,11 +1382,11 @@ describe('basic functionality', () => {
         id: 1,
         metadata: 'taken by Camera',
         filename: 'myphoto.jpg',
-        status: 1
+        status: 1,
       },
     });
-    
-    const classToClassUser = classToClass(user, { groups: ['user'] });
+
+    const classToClassUser = instanceToInstance(user, { groups: ['user'] });
     expect(classToClassUser).toBeInstanceOf(User);
     expect(classToClassUser.photo).toBeInstanceOf(Photo);
     expect(classToClassUser).not.toEqual(user);
@@ -1405,21 +1401,17 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         filename: 'myphoto.jpg',
-        status: 1
+        status: 1,
       },
     });
 
-    const classToClassGuestUser = classToClass(user, { groups: ['guest'] });
+    const classToClassGuestUser = instanceToInstance(user, { groups: ['guest'] });
     expect(classToClassGuestUser.isActive).toBeUndefined();
 
-    const classToClassNoGroupUser = classToClass(user);
+    const classToClassNoGroupUser = instanceToInstance(user);
     expect(classToClassNoGroupUser).toEqual(user);
 
-    const classToClassFromExistUser = classToClassFromExist(
-      user,
-      fromExistUser,
-      { groups: ['user'] }
-    );
+    const classToClassFromExistUser = classToClassFromExist(user, fromExistUser, { groups: ['user'] });
     expect(classToClassFromExistUser).toBeInstanceOf(User);
     expect(classToClassFromExistUser.photo).toBeInstanceOf(Photo);
     expect(classToClassFromExistUser).not.toEqual(user);
@@ -1435,11 +1427,11 @@ describe('basic functionality', () => {
         id: 1,
         metadata: 'taken by Camera',
         filename: 'myphoto.jpg',
-        status: 1
+        status: 1,
       },
     });
 
-    const plainUser3: any = classToPlain(user, { groups: ['guest'] });
+    const plainUser3: any = instanceToPlain(user, { groups: ['guest'] });
     expect(plainUser3).not.toBeInstanceOf(User);
     expect(plainUser3).toEqual({
       firstName: 'Umed',
@@ -1454,7 +1446,7 @@ describe('basic functionality', () => {
     expect(plainUser3.isActive).toBeUndefined();
     expect(plainUser3.photo.status).toBeUndefined();
 
-    const transformedUser3 = plainToClass(User, fromPlainUser, {
+    const transformedUser3 = plainToInstance(User, fromPlainUser, {
       groups: ['guest'],
     });
     expect(transformedUser3).toBeInstanceOf(User);
@@ -1468,7 +1460,7 @@ describe('basic functionality', () => {
       },
     });
 
-    const plainUser4: any = classToPlain(user, { groups: ['user', 'guest'] });
+    const plainUser4: any = instanceToPlain(user, { groups: ['user', 'guest'] });
     expect(plainUser4).not.toBeInstanceOf(User);
     expect(plainUser4).toEqual({
       firstName: 'Umed',
@@ -1479,7 +1471,7 @@ describe('basic functionality', () => {
       },
     });
 
-    const transformedUser4 = plainToClass(User, fromPlainUser, {
+    const transformedUser4 = plainToInstance(User, fromPlainUser, {
       groups: ['guest', 'user'],
     });
     expect(transformedUser4).toBeInstanceOf(User);
@@ -1770,7 +1762,7 @@ describe('basic functionality', () => {
 
       @Exclude({
         since: 0.5,
-        until: 3
+        until: 3,
       })
       @Type(_type => Photo)
       photos: Photo[];
@@ -1804,7 +1796,7 @@ describe('basic functionality', () => {
       ],
     };
 
-    const plainCompleteResult ={
+    const plainCompleteResult = {
       firstName: 'Umed',
       lastName: 'Khudoiberdiev',
       photo: {
@@ -1819,31 +1811,30 @@ describe('basic functionality', () => {
           status: 1,
         },
       ],
-    }
+    };
 
-    const plainUser1: any = classToPlain(user);
+    const plainUser1: any = instanceToPlain(user);
     expect(plainUser1).not.toBeInstanceOf(User);
     expect(plainUser1).toEqual(plainCompleteResult);
 
-    const transformedUser1 = plainToClass(User, fromPlainUser);
+    const transformedUser1 = plainToInstance(User, fromPlainUser);
     expect(transformedUser1).toBeInstanceOf(User);
     expect(transformedUser1.photo).toBeInstanceOf(Photo);
     expect(transformedUser1.photos[0]).toBeInstanceOf(Photo);
     expect(transformedUser1).toEqual(plainCompleteResult);
 
-    const plainUser2: any = classToPlain(user, { version: 0.3 });
+    const plainUser2: any = instanceToPlain(user, { version: 0.3 });
     expect(plainUser2).not.toBeInstanceOf(User);
     expect(transformedUser1).toEqual(plainCompleteResult);
 
-    const transformedUser2 = plainToClass(User, fromPlainUser, {
+    const transformedUser2 = plainToInstance(User, fromPlainUser, {
       version: 0.3,
     });
     expect(transformedUser2).toBeInstanceOf(User);
     expect(transformedUser2.photo).toBeInstanceOf(Photo);
     expect(transformedUser2).toEqual(plainCompleteResult);
 
-    
-    const plainUser3: any = classToPlain(user, { version: 0.5 });
+    const plainUser3: any = instanceToPlain(user, { version: 0.5 });
     expect(plainUser3).not.toBeInstanceOf(User);
     expect(plainUser3.photos).toBeUndefined();
     expect(plainUser3.photo.filename).toBeUndefined();
@@ -1853,10 +1844,10 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         status: 1,
-      }
-    })
+      },
+    });
 
-    const transformedUser3 = plainToClass(User, fromPlainUser, {
+    const transformedUser3 = plainToInstance(User, fromPlainUser, {
       version: 0.5,
     });
     expect(transformedUser3).toBeInstanceOf(User);
@@ -1867,10 +1858,10 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         status: 1,
-      }
+      },
     });
 
-    const plainUser4: any = classToPlain(user, { version: 1 });
+    const plainUser4: any = instanceToPlain(user, { version: 1 });
     expect(plainUser4).not.toBeInstanceOf(User);
     expect(plainUser4).toEqual({
       firstName: 'Umed',
@@ -1878,11 +1869,11 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         status: 1,
-        filename: 'myphoto.jpg'
-      }
+        filename: 'myphoto.jpg',
+      },
     });
 
-    const transformedUser4 = plainToClass(User, fromPlainUser, { version: 1 });
+    const transformedUser4 = plainToInstance(User, fromPlainUser, { version: 1 });
     expect(transformedUser4).toBeInstanceOf(User);
     expect(transformedUser4.photo).toBeInstanceOf(Photo);
     expect(transformedUser4).toEqual({
@@ -1891,11 +1882,11 @@ describe('basic functionality', () => {
       photo: {
         id: 1,
         status: 1,
-        filename: 'myphoto.jpg'
-      }
+        filename: 'myphoto.jpg',
+      },
     });
 
-    const plainUser5: any = classToPlain(user, { version: 2 });
+    const plainUser5: any = instanceToPlain(user, { version: 2 });
     expect(plainUser5).not.toBeInstanceOf(User);
     expect(plainUser5).toEqual({
       firstName: 'Umed',
@@ -1906,7 +1897,7 @@ describe('basic functionality', () => {
       },
     });
 
-    const transformedUser5 = plainToClass(User, fromPlainUser, {
+    const transformedUser5 = plainToInstance(User, fromPlainUser, {
       version: 2,
     });
     expect(transformedUser5).toBeInstanceOf(User);
@@ -1920,7 +1911,7 @@ describe('basic functionality', () => {
       },
     });
 
-    const plainUser6: any = classToPlain(user, { version: 3 });
+    const plainUser6: any = instanceToPlain(user, { version: 3 });
     expect(plainUser6).not.toBeInstanceOf(User);
     expect(plainUser6).toEqual({
       firstName: 'Umed',
@@ -1937,7 +1928,7 @@ describe('basic functionality', () => {
       ],
     });
 
-    const transformedUser6 = plainToClass(User, fromPlainUser, { version: 3 });
+    const transformedUser6 = plainToInstance(User, fromPlainUser, { version: 3 });
     expect(transformedUser6).toBeInstanceOf(User);
     expect(transformedUser6.photo).toBeInstanceOf(Photo);
     expect(transformedUser6.photos[0]).toBeInstanceOf(Photo);
