@@ -198,7 +198,7 @@ describe('transformer methods decorator', () => {
       @Expose({ since: 2 })
       websiteUrl?: string;
 
-      @Exclude({since: 2})
+      @Exclude({ since: 2 })
       email: string;
 
       password: string;

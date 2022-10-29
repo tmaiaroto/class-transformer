@@ -19,7 +19,7 @@ describe('ignoring specific decorators', () => {
       @Exclude({ groups: ['user'] })
       email: string;
 
-      @Exclude({since: 0.5})
+      @Exclude({ since: 0.5 })
       address: string;
 
       @Exclude()
